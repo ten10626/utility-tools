@@ -18,6 +18,17 @@ GitHub Pagesでそのまま公開できる、HTML/CSS/JavaScriptのみの静的�
 - 外部APIや外部配信サービスには依存していません。
 - 各ツールの処理はブラウザ内だけで完了します。
 
+## 同梱ライブラリ
+
+QRコード生成には `qrcode-generator` 2.0.4 をローカル同梱しています。
+
+- 配置: `vendor/qrcode.js`
+- ライセンス: MIT
+- ライセンスメモ: `vendor/qrcode-generator-LICENSE.txt`
+- 用途: URL共有用QRコード生成
+
+このライブラリはブラウザ内でQRコードを生成するために使用しており、入力URLを外部へ送信しません。
+
 ## 使い方
 
 `index.html` をブラウザで開くと利用できます。GitHub Pagesでも追加設定なしで動作します。
@@ -58,3 +69,5 @@ https://<GitHubユーザー名>.github.io/
 - `index.html`: 画面構成
 - `styles.css`: 表示スタイル
 - `script.js`: 各ツールの処理
+- `vendor/qrcode.js`: QRコード生成ライブラリ
+- `vendor/qrcode-generator-LICENSE.txt`: QRコード生成ライブラリのライセンスメモ
