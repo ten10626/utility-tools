@@ -16,41 +16,98 @@
 
     <main id="top" class="wrap">
       <section class="intro" aria-labelledby="site-title">
-        <h1 id="site-title">便利ツールまとめ</h1>
-        <p>入力内容はこのページ内だけで処理します。外部送信や保存はしません。</p>
+        <div class="intro-copy">
+          <p class="eyebrow">身内向けの小さな道具箱</p>
+          <h1 id="site-title">便利ツールまとめ</h1>
+          <p>精算、抽選、順番決め、共有用QRコード作成を、このページだけでさっと使えます。</p>
+        </div>
+        <div class="privacy-note" aria-label="このサイトの扱い">
+          <span>外部送信なし</span>
+          <span>保存なし</span>
+          <span>スマホ優先</span>
+        </div>
+      </section>
+
+      <section class="tool-overview" aria-labelledby="tool-overview-title">
+        <div>
+          <h2 id="tool-overview-title">使いたいツールを選択</h2>
+          <p>入力した内容はブラウザ内で処理します。結果は各ツールの下に表示されます。</p>
+        </div>
       </section>
 
       <nav class="tool-grid" aria-label="ツール一覧">
-        <a class="tool-card" href="#split-bill">
-          <span class="tool-icon">¥</span>
+        <a class="tool-card split-card" href="#split-bill">
+          <span class="tool-icon" aria-hidden="true">
+            <svg viewBox="0 0 48 48" focusable="false">
+              <path d="M14 12h20a4 4 0 0 1 4 4v16a4 4 0 0 1-4 4H14a4 4 0 0 1-4-4V16a4 4 0 0 1 4-4Z"></path>
+              <path d="M12 20h24"></path>
+              <path d="M18 28h12"></path>
+              <path d="M24 18v14"></path>
+              <path d="M19 18l5 6 5-6"></path>
+            </svg>
+          </span>
           <span>
             <strong>立替精算</strong>
             <small>支払い差額から精算ルートを作成</small>
           </span>
         </a>
-        <a class="tool-card" href="#lottery">
-          <span class="tool-icon">抽</span>
+        <a class="tool-card lottery-card" href="#lottery">
+          <span class="tool-icon" aria-hidden="true">
+            <svg viewBox="0 0 48 48" focusable="false">
+              <path d="M13 22h22l-3 15H16l-3-15Z"></path>
+              <path d="M17 22l3-8h8l3 8"></path>
+              <path d="M27 11l9 6-5 7-9-6 5-7Z"></path>
+              <path d="M19 29h10"></path>
+            </svg>
+          </span>
           <span>
             <strong>ランダム抽選</strong>
             <small>候補から重複なしで選ぶ</small>
           </span>
         </a>
-        <a class="tool-card" href="#numbering">
-          <span class="tool-icon">#</span>
+        <a class="tool-card numbering-card" href="#numbering">
+          <span class="tool-icon" aria-hidden="true">
+            <svg viewBox="0 0 48 48" focusable="false">
+              <path d="M14 15h5v18"></path>
+              <path d="M13 33h8"></path>
+              <path d="M27 15h8l-8 18h9"></path>
+              <path d="M18 24h12"></path>
+            </svg>
+          </span>
           <span>
             <strong>ランダム番号振り分け</strong>
             <small>ランダム順に番号を割り当て</small>
           </span>
         </a>
-        <a class="tool-card" href="#roulette">
-          <span class="tool-icon">◎</span>
+        <a class="tool-card roulette-card" href="#roulette">
+          <span class="tool-icon" aria-hidden="true">
+            <svg viewBox="0 0 48 48" focusable="false">
+              <path d="M24 39a15 15 0 1 0 0-30 15 15 0 0 0 0 30Z"></path>
+              <path d="M24 24V9"></path>
+              <path d="M24 24l13 7"></path>
+              <path d="M24 24 12 32"></path>
+              <path d="M24 24l6-12"></path>
+              <path d="M24 28a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z"></path>
+            </svg>
+          </span>
           <span>
             <strong>ルーレット</strong>
             <small>通常モードと指名モードに対応</small>
           </span>
         </a>
-        <a class="tool-card" href="#qr">
-          <span class="tool-icon">QR</span>
+        <a class="tool-card qr-card" href="#qr">
+          <span class="tool-icon" aria-hidden="true">
+            <svg viewBox="0 0 48 48" focusable="false">
+              <path d="M12 12h10v10H12V12Z"></path>
+              <path d="M26 12h10v10H26V12Z"></path>
+              <path d="M12 26h10v10H12V26Z"></path>
+              <path d="M28 28h4"></path>
+              <path d="M36 28v4"></path>
+              <path d="M28 36h8"></path>
+              <path d="M28 32v4"></path>
+              <path d="M34 34h2"></path>
+            </svg>
+          </span>
           <span>
             <strong>URL共有用QRコード生成</strong>
             <small>ブラウザ内でQR画像を生成</small>
