@@ -3,80 +3,68 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>便利ツールまとめ</title>
-    <meta name="description" content="身内向けに使いやすい、保存しない静的な便利ツール集です。">
+    <title>便利ツール集</title>
+    <meta name="description" content="保存しない静的な便利ツール集です。">
+    <meta name="theme-color" content="#146c5d">
+    <meta name="apple-mobile-web-app-title" content="便利ツール">
+    <link rel="icon" type="image/png" sizes="64x64" href="favicon.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+    <link rel="manifest" href="manifest.json">
     <link rel="stylesheet" href="styles.css">
   </head>
   <body>
     <header class="site-header">
       <div class="wrap">
-        <a class="brand" href="#top" aria-label="便利ツールまとめ トップへ">便利ツールまとめ</a>
+        <a class="brand" href="#top" aria-label="便利ツール集 トップへ">便利ツール集</a>
       </div>
     </header>
 
     <main id="top" class="wrap">
       <section class="intro" aria-labelledby="site-title">
-        <div class="intro-copy">
-          <p class="eyebrow">身内向けの小さな道具箱</p>
-          <h1 id="site-title">便利ツールまとめ</h1>
-          <p>精算、抽選、順番決め、共有用QRコード作成を、このページだけでさっと使えます。</p>
-        </div>
+        <h1 id="site-title">便利ツール集</h1>
         <div class="privacy-note" aria-label="このサイトの扱い">
           <span>外部送信なし</span>
           <span>保存なし</span>
-          <span>スマホ優先</span>
-        </div>
-      </section>
-
-      <section class="tool-overview" aria-labelledby="tool-overview-title">
-        <div>
-          <h2 id="tool-overview-title">使いたいツールを選択</h2>
-          <p>入力した内容はブラウザ内で処理します。結果は各ツールの下に表示されます。</p>
         </div>
       </section>
 
       <nav class="tool-grid" aria-label="ツール一覧">
         <a class="tool-card split-card" href="#split-bill">
-          <span class="tool-icon" aria-hidden="true">
-            <svg viewBox="0 0 48 48" focusable="false">
-              <path d="M14 12h20a4 4 0 0 1 4 4v16a4 4 0 0 1-4 4H14a4 4 0 0 1-4-4V16a4 4 0 0 1 4-4Z"></path>
-              <path d="M12 20h24"></path>
-              <path d="M18 28h12"></path>
-              <path d="M24 18v14"></path>
-              <path d="M19 18l5 6 5-6"></path>
-            </svg>
-          </span>
+          <span class="tool-icon yen-icon" aria-hidden="true">¥</span>
           <span>
             <strong>立替精算</strong>
-            <small>支払い差額から精算ルートを作成</small>
+            <small>誰が誰にいくら払うかを計算</small>
           </span>
         </a>
         <a class="tool-card lottery-card" href="#lottery">
           <span class="tool-icon" aria-hidden="true">
             <svg viewBox="0 0 48 48" focusable="false">
-              <path d="M13 22h22l-3 15H16l-3-15Z"></path>
-              <path d="M17 22l3-8h8l3 8"></path>
-              <path d="M27 11l9 6-5 7-9-6 5-7Z"></path>
-              <path d="M19 29h10"></path>
+              <path d="M12 20h24l-3 17H15l-3-17Z"></path>
+              <path d="M16 20l4-8h8l4 8"></path>
+              <path d="M19 26h10"></path>
+              <path d="M21 31h6"></path>
             </svg>
           </span>
           <span>
             <strong>ランダム抽選</strong>
-            <small>候補から重複なしで選ぶ</small>
+            <small>候補から重複なしで当選者を選ぶ</small>
           </span>
         </a>
         <a class="tool-card numbering-card" href="#numbering">
           <span class="tool-icon" aria-hidden="true">
             <svg viewBox="0 0 48 48" focusable="false">
-              <path d="M14 15h5v18"></path>
-              <path d="M13 33h8"></path>
-              <path d="M27 15h8l-8 18h9"></path>
-              <path d="M18 24h12"></path>
+              <path d="M10 13h9v9h-9V13Z"></path>
+              <path d="M22 20h9v9h-9V20Z"></path>
+              <path d="M34 27h9v9h-9V27Z"></path>
+              <path d="M14 19v-3"></path>
+              <path d="M26 26v-3"></path>
+              <path d="M38 34h3"></path>
+              <path d="M38 30h3"></path>
             </svg>
           </span>
           <span>
             <strong>ランダム番号振り分け</strong>
-            <small>ランダム順に番号を割り当て</small>
+            <small>名前をランダム順に並べて番号を付ける</small>
           </span>
         </a>
         <a class="tool-card roulette-card" href="#roulette">
@@ -92,7 +80,7 @@
           </span>
           <span>
             <strong>ルーレット</strong>
-            <small>通常モードと指名モードに対応</small>
+            <small>候補から1つ選ぶ。指名モードにも対応</small>
           </span>
         </a>
         <a class="tool-card qr-card" href="#qr">
@@ -110,7 +98,7 @@
           </span>
           <span>
             <strong>URL共有用QRコード生成</strong>
-            <small>ブラウザ内でQR画像を生成</small>
+            <small>URLをQRコードに変換</small>
           </span>
         </a>
       </nav>
