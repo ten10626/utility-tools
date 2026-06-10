@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>便利ツールまとめ</title>
+    <meta name="description" content="身内向けに使いやすい、保存しない静的な便利ツール集です。">
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="wrap">
+        <a class="brand" href="#top" aria-label="便利ツールまとめ トップへ">便利ツールまとめ</a>
+      </div>
+    </header>
+
+    <main id="top" class="wrap">
+      <section class="intro" aria-labelledby="site-title">
+        <h1 id="site-title">便利ツールまとめ</h1>
+        <p>入力内容はこのページ内だけで処理します。外部送信や保存はしません。</p>
+      </section>
+
+      <nav class="tool-grid" aria-label="ツール一覧">
+        <a class="tool-card" href="#split-bill">
+          <span class="tool-icon">¥</span>
+          <span>
+            <strong>立替精算</strong>
+            <small>支払い差額から精算ルートを作成</small>
+          </span>
+        </a>
+        <a class="tool-card" href="#lottery">
+          <span class="tool-icon">抽</span>
+          <span>
+            <strong>ランダム抽選</strong>
+            <small>候補から重複なしで選ぶ</small>
+          </span>
+        </a>
+        <a class="tool-card" href="#numbering">
+          <span class="tool-icon">#</span>
+          <span>
+            <strong>ランダム番号振り分け</strong>
+            <small>ランダム順に番号を割り当て</small>
+          </span>
+        </a>
+        <a class="tool-card" href="#roulette">
+          <span class="tool-icon">◎</span>
+          <span>
+            <strong>ルーレット</strong>
+            <small>通常モードと指名モードに対応</small>
+          </span>
+        </a>
+        <a class="tool-card" href="#qr">
+          <span class="tool-icon">QR</span>
+          <span>
+            <strong>URL共有用QRコード生成</strong>
+            <small>ブラウザ内でQR画像を生成</small>
+          </span>
+        </a>
+      </nav>
+
+      <section id="split-bill" class="tool-section" aria-labelledby="split-title">
+        <div class="section-head">
+          <h2 id="split-title">立替精算</h2>
+          <a href="#top">一覧へ</a>
+        </div>
+        <div class="people-list" id="settlement-rows"></div>
+        <div class="button-row">
+          <button type="button" class="secondary" id="add-settlement-row">行を追加</button>
+          <button type="button" id="calc-settlement">計算する</button>
+        </div>
+        <div class="result-box" id="settlement-result" aria-live="polite"></div>
+      </section>
+
+      <section id="lottery" class="tool-section" aria-labelledby="lottery-title">
+        <div class="section-head">
+          <h2 id="lottery-title">ランダム抽選</h2>
+          <a href="#top">一覧へ</a>
+        </div>
+        <label for="lottery-candidates">候補</label>
+        <textarea id="lottery-candidates" rows="7" placeholder="A&#10;B&#10;C"></textarea>
+        <label for="lottery-count">当選人数</label>
+        <input id="lottery-count" type="number" min="1" step="1" value="1">
+        <div class="button-row">
+          <button type="button" id="run-lottery">抽選する</button>
+          <button type="button" class="secondary copy-btn" data-copy-target="lottery-result">結果をコピー</button>
+        </div>
+        <div class="result-box" id="lottery-result" aria-live="polite"></div>
+      </section>
+
+      <section id="numbering" class="tool-section" aria-labelledby="numbering-title">
+        <div class="section-head">
+          <h2 id="numbering-title">ランダム番号振り分け</h2>
+          <a href="#top">一覧へ</a>
+        </div>
+        <label for="numbering-candidates">候補</label>
+        <textarea id="numbering-candidates" rows="7" placeholder="A&#10;B&#10;C"></textarea>
+        <label for="numbering-start">開始番号</label>
+        <input id="numbering-start" type="number" step="1" value="1">
+        <div class="button-row">
+          <button type="button" id="run-numbering">振り分ける</button>
+          <button type="button" class="secondary copy-btn" data-copy-target="numbering-result">結果をコピー</button>
+        </div>
+        <div class="result-box" id="numbering-result" aria-live="polite"></div>
+      </section>
+
+      <section id="roulette" class="tool-section" aria-labelledby="roulette-title">
+        <div class="section-head">
+          <h2 id="roulette-title">ルーレット</h2>
+          <a href="#top">一覧へ</a>
+        </div>
+        <label for="roulette-candidates">候補</label>
+        <textarea id="roulette-candidates" rows="7" placeholder="A&#10;B&#10;C"></textarea>
+        <fieldset class="segmented">
+          <legend>モード</legend>
+          <label><input type="radio" name="roulette-mode" value="normal" checked> 通常</label>
+          <label><input type="radio" name="roulette-mode" value="nomination"> 指名</label>
+        </fieldset>
+        <div class="roulette-display" id="roulette-display">?</div>
+        <div class="button-row">
+          <button type="button" id="spin-roulette">回す</button>
+          <button type="button" class="secondary" id="reset-roulette">リセット</button>
+        </div>
+        <div class="result-box" id="roulette-result" aria-live="polite"></div>
+      </section>
+
+      <section id="qr" class="tool-section" aria-labelledby="qr-title">
+        <div class="section-head">
+          <h2 id="qr-title">URL共有用QRコード生成</h2>
+          <a href="#top">一覧へ</a>
+        </div>
+        <label for="qr-url">URL</label>
+        <input id="qr-url" type="url" inputmode="url" placeholder="https://example.com/">
+        <div class="button-row">
+          <button type="button" id="make-qr">QRコード生成</button>
+          <button type="button" class="secondary" id="save-qr" disabled>画像を保存</button>
+        </div>
+        <div class="qr-stage">
+          <canvas id="qr-canvas" width="256" height="256" aria-label="生成されたQRコード"></canvas>
+        </div>
+        <div class="result-box" id="qr-result" aria-live="polite"></div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="wrap">すべてブラウザ内で処理します。</div>
+    </footer>
+
+    <script src="script.js"></script>
+  </body>
+</html>
