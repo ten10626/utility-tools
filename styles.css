@@ -309,14 +309,14 @@ button:disabled {
   display: grid;
   place-items: center;
   margin-top: 14px;
-  padding: 16px;
+  padding: 18px;
   border: 1px dashed var(--line);
   border-radius: 8px;
   background: #fff;
 }
 
 #qr-canvas {
-  width: min(100%, 280px);
+  width: min(100%, 360px);
   height: auto;
   image-rendering: pixelated;
 }
