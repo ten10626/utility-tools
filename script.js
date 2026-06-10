@@ -54,7 +54,7 @@ function addSettlementRow(name = "", amount = "") {
       <input class="settlement-name" type="text" autocomplete="off" value="${escapeAttr(name)}" placeholder="A">
     </div>
     <div>
-      <label>支払済み金額</label>
+      <label>支払い済み金額</label>
       <input class="settlement-amount" type="number" min="0" step="1" inputmode="numeric" value="${escapeAttr(amount)}" placeholder="0">
     </div>
     <button type="button" class="remove-row" aria-label="行を削除">×</button>
@@ -136,9 +136,9 @@ function calculateSettlement() {
 
 $("add-settlement-row").addEventListener("click", () => addSettlementRow());
 $("calc-settlement").addEventListener("click", calculateSettlement);
-addSettlementRow("A", "1500");
-addSettlementRow("B", "0");
-addSettlementRow("C", "600");
+addSettlementRow();
+addSettlementRow();
+addSettlementRow();
 
 $("run-lottery").addEventListener("click", () => {
   const candidates = getLines("lottery-candidates");
