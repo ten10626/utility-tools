@@ -135,7 +135,7 @@
           <button type="button" class="secondary" id="save-qr" disabled>画像を保存</button>
         </div>
         <div class="qr-stage">
-          <canvas id="qr-canvas" width="256" height="256" aria-label="生成されたQRコード"></canvas>
+          <canvas id="qr-canvas" width="512" height="512" aria-label="生成されたQRコード"></canvas>
         </div>
         <div class="result-box" id="qr-result" aria-live="polite"></div>
       </section>
@@ -145,6 +145,7 @@
       <div class="wrap">すべてブラウザ内で処理します。</div>
     </footer>
 
+    <script src="vendor/qrcode.js"></script>
     <script src="script.js"></script>
   </body>
 </html>
