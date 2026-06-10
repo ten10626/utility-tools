@@ -219,215 +219,41 @@ $("spin-roulette").addEventListener("click", spinRoulette);
 $("reset-roulette").addEventListener("click", resetRoulette);
 document.querySelectorAll('input[name="roulette-mode"]').forEach((radio) => radio.addEventListener("change", resetRoulette));
 
-const qrConfig = [
-  null,
-  { data: 19, ecc: 7, align: [] },
-  { data: 34, ecc: 10, align: [6, 18] },
-  { data: 55, ecc: 15, align: [6, 22] },
-  { data: 80, ecc: 20, align: [6, 26] },
-  { data: 108, ecc: 26, align: [6, 30] },
-];
+const qrQuietZoneModules = 4;
 
 function makeQrCode(text) {
-  const bytes = [...new TextEncoder().encode(text)];
-  let version = 1;
-  for (; version < qrConfig.length; version += 1) {
-    const countBits = 8;
-    const usable = qrConfig[version].data * 8 - 4 - countBits - 4;
-    if (bytes.length * 8 <= usable) break;
+  if (typeof qrcode !== "function") {
+    throw new Error("QRコード生成ライブラリを読み込めませんでした。");
   }
-  if (version >= qrConfig.length) throw new Error("URLが長すぎます。短いURLにしてください。");
-
-  const cfg = qrConfig[version];
-  const bits = [];
-  appendBits(bits, 0b0100, 4);
-  appendBits(bits, bytes.length, 8);
-  bytes.forEach((byte) => appendBits(bits, byte, 8));
-  appendBits(bits, 0, Math.min(4, cfg.data * 8 - bits.length));
-  while (bits.length % 8) bits.push(0);
-  const data = [];
-  for (let i = 0; i < bits.length; i += 8) data.push(bitsToByte(bits.slice(i, i + 8)));
-  for (let pad = 0; data.length < cfg.data; pad += 1) data.push(pad % 2 ? 0x11 : 0xec);
-
-  const codewords = [...data, ...reedSolomon(data, cfg.ecc)];
-  return buildQrMatrix(version, codewords);
+  const qr = qrcode(0, "M");
+  qr.addData(text);
+  qr.make();
+  return qr;
 }
 
-function appendBits(bits, value, length) {
-  for (let i = length - 1; i >= 0; i -= 1) bits.push((value >>> i) & 1);
-}
-
-function bitsToByte(bits) {
-  return bits.reduce((value, bit) => (value << 1) | bit, 0);
-}
-
-const gfExp = new Array(512);
-const gfLog = new Array(256);
-(function initGf() {
-  let x = 1;
-  for (let i = 0; i < 255; i += 1) {
-    gfExp[i] = x;
-    gfLog[x] = i;
-    x <<= 1;
-    if (x & 0x100) x ^= 0x11d;
-  }
-  for (let i = 255; i < 512; i += 1) gfExp[i] = gfExp[i - 255];
-})();
-
-function gfMul(a, b) {
-  if (a === 0 || b === 0) return 0;
-  return gfExp[gfLog[a] + gfLog[b]];
-}
-
-function rsGenerator(degree) {
-  let poly = [1];
-  for (let i = 0; i < degree; i += 1) {
-    const next = new Array(poly.length + 1).fill(0);
-    poly.forEach((coef, j) => {
-      next[j] ^= gfMul(coef, gfExp[i]);
-      next[j + 1] ^= coef;
-    });
-    poly = next;
-  }
-  return poly.slice(1);
-}
-
-function reedSolomon(data, degree) {
-  const gen = rsGenerator(degree);
-  const rem = new Array(degree).fill(0);
-  data.forEach((byte) => {
-    const factor = byte ^ rem.shift();
-    rem.push(0);
-    gen.forEach((coef, i) => {
-      rem[i] ^= gfMul(coef, factor);
-    });
-  });
-  return rem;
-}
-
-function buildQrMatrix(version, codewords) {
-  const size = 17 + version * 4;
-  const matrix = Array.from({ length: size }, () => new Array(size).fill(false));
-  const reserved = Array.from({ length: size }, () => new Array(size).fill(false));
-  const set = (r, c, dark, isReserved = true) => {
-    if (r < 0 || c < 0 || r >= size || c >= size) return;
-    matrix[r][c] = dark;
-    if (isReserved) reserved[r][c] = true;
-  };
-
-  placeFinder(set, 0, 0);
-  placeFinder(set, 0, size - 7);
-  placeFinder(set, size - 7, 0);
-  for (let i = 0; i < size; i += 1) {
-    if (!reserved[6][i]) set(6, i, i % 2 === 0);
-    if (!reserved[i][6]) set(i, 6, i % 2 === 0);
-  }
-  qrConfig[version].align.forEach((r) => {
-    qrConfig[version].align.forEach((c) => {
-      if ((r === 6 && c === 6) || (r === 6 && c === size - 7) || (r === size - 7 && c === 6)) return;
-      placeAlign(set, r - 2, c - 2);
-    });
-  });
-  set(4 * version + 9, 8, true);
-  reserveFormat(reserved, size);
-
-  const dataBits = [];
-  codewords.forEach((byte) => appendBits(dataBits, byte, 8));
-  let bitIndex = 0;
-  let upward = true;
-  for (let col = size - 1; col > 0; col -= 2) {
-    if (col === 6) col -= 1;
-    for (let i = 0; i < size; i += 1) {
-      const row = upward ? size - 1 - i : i;
-      for (let offset = 0; offset < 2; offset += 1) {
-        const c = col - offset;
-        if (reserved[row][c]) continue;
-        let dark = bitIndex < dataBits.length ? dataBits[bitIndex] === 1 : false;
-        if ((row + c) % 2 === 0) dark = !dark;
-        matrix[row][c] = dark;
-        bitIndex += 1;
-      }
-    }
-    upward = !upward;
-  }
-  placeFormat(matrix, reserved, size, 0);
-  return matrix;
-}
-
-function placeFinder(set, top, left) {
-  for (let r = -1; r <= 7; r += 1) {
-    for (let c = -1; c <= 7; c += 1) {
-      const rr = top + r;
-      const cc = left + c;
-      const inFinder = r >= 0 && r <= 6 && c >= 0 && c <= 6;
-      const dark = inFinder && (r === 0 || r === 6 || c === 0 || c === 6 || (r >= 2 && r <= 4 && c >= 2 && c <= 4));
-      set(rr, cc, dark);
-    }
-  }
-}
-
-function placeAlign(set, top, left) {
-  for (let r = 0; r < 5; r += 1) {
-    for (let c = 0; c < 5; c += 1) {
-      set(top + r, left + c, r === 0 || r === 4 || c === 0 || c === 4 || (r === 2 && c === 2));
-    }
-  }
-}
-
-function reserveFormat(reserved, size) {
-  for (let i = 0; i < 9; i += 1) {
-    reserved[8][i] = true;
-    reserved[i][8] = true;
-  }
-  for (let i = 0; i < 8; i += 1) {
-    reserved[8][size - 1 - i] = true;
-    reserved[size - 1 - i][8] = true;
-  }
-}
-
-function formatBits(mask) {
-  let data = (1 << 3) | mask;
-  let bits = data << 10;
-  for (let i = 14; i >= 10; i -= 1) {
-    if ((bits >>> i) & 1) bits ^= 0x537 << (i - 10);
-  }
-  return (((data << 10) | bits) ^ 0x5412) & 0x7fff;
-}
-
-function placeFormat(matrix, reserved, size, mask) {
-  const bits = formatBits(mask);
-  const coords1 = [
-    [8, 0], [8, 1], [8, 2], [8, 3], [8, 4], [8, 5], [8, 7], [8, 8],
-    [7, 8], [5, 8], [4, 8], [3, 8], [2, 8], [1, 8], [0, 8],
-  ];
-  const coords2 = [
-    [size - 1, 8], [size - 2, 8], [size - 3, 8], [size - 4, 8], [size - 5, 8], [size - 6, 8], [size - 7, 8],
-    [8, size - 8], [8, size - 7], [8, size - 6], [8, size - 5], [8, size - 4], [8, size - 3], [8, size - 2], [8, size - 1],
-  ];
-  coords1.forEach(([r, c], i) => {
-    matrix[r][c] = ((bits >>> i) & 1) === 1;
-    reserved[r][c] = true;
-  });
-  coords2.forEach(([r, c], i) => {
-    matrix[r][c] = ((bits >>> i) & 1) === 1;
-    reserved[r][c] = true;
-  });
-}
-
-function drawQr(matrix) {
+function drawQr(qr) {
   const canvas = $("qr-canvas");
-  const size = matrix.length;
-  const scale = Math.floor(canvas.width / (size + 8));
-  const offset = Math.floor((canvas.width - size * scale) / 2);
+  const moduleCount = qr.getModuleCount();
+  const totalModules = moduleCount + qrQuietZoneModules * 2;
+  const scale = Math.max(1, Math.floor(canvas.width / totalModules));
+  const drawnSize = totalModules * scale;
+  const offset = Math.floor((canvas.width - drawnSize) / 2);
   const ctx = canvas.getContext("2d");
   ctx.fillStyle = "#ffffff";
   ctx.fillRect(0, 0, canvas.width, canvas.height);
   ctx.fillStyle = "#111827";
-  matrix.forEach((row, r) => {
-    row.forEach((dark, c) => {
-      if (dark) ctx.fillRect(offset + c * scale, offset + r * scale, scale, scale);
-    });
-  });
+  for (let row = 0; row < moduleCount; row += 1) {
+    for (let col = 0; col < moduleCount; col += 1) {
+      if (qr.isDark(row, col)) {
+        ctx.fillRect(
+          offset + (col + qrQuietZoneModules) * scale,
+          offset + (row + qrQuietZoneModules) * scale,
+          scale,
+          scale,
+        );
+      }
+    }
+  }
 }
 
 function validateUrl(value) {
