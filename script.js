@@ -54,11 +54,16 @@ function addSettlementRow(name = "", amount = "") {
       <input class="settlement-name" type="text" autocomplete="off" value="${escapeAttr(name)}" placeholder="A">
     </div>
     <div>
-      <label>支払い済み金額</label>
-      <input class="settlement-amount" type="number" min="0" step="1" inputmode="numeric" value="${escapeAttr(amount)}" placeholder="0">
+      <label>支払い明細</label>
+      <textarea class="settlement-amount" rows="3" inputmode="numeric" placeholder="1000&#10;2000円">${escapeText(amount)}</textarea>
+      <p class="person-total">合計：0円</p>
+      <p class="person-warning" aria-live="polite"></p>
     </div>
     <button type="button" class="remove-row" aria-label="行を削除">×</button>
   `;
+  const amountInput = row.querySelector(".settlement-amount");
+  amountInput.addEventListener("input", () => updateSettlementRowTotal(row));
+  updateSettlementRowTotal(row);
   row.querySelector(".remove-row").addEventListener("click", () => {
     row.remove();
     if (!list.children.length) addSettlementRow();
@@ -70,13 +75,56 @@ function escapeAttr(value) {
   return String(value).replaceAll("&", "&amp;").replaceAll('"', "&quot;").replaceAll("<", "&lt;");
 }
 
+function escapeText(value) {
+  return String(value).replaceAll("&", "&amp;").replaceAll("<", "&lt;");
+}
+
+function parsePaymentLines(value) {
+  const invalidLines = [];
+  const total = value.split(/\r?\n/).reduce((sum, rawLine, index) => {
+    const line = rawLine.trim();
+    if (!line) return sum;
+    const normalized = line.replaceAll(",", "").replace(/円$/u, "").trim();
+    if (!/^\d+$/u.test(normalized)) {
+      invalidLines.push(index + 1);
+      return sum;
+    }
+    return sum + Number(normalized);
+  }, 0);
+  return { total, invalidLines };
+}
+
+function updateSettlementRowTotal(row) {
+  const amountInput = row.querySelector(".settlement-amount");
+  const totalEl = row.querySelector(".person-total");
+  const warningEl = row.querySelector(".person-warning");
+  const { total, invalidLines } = parsePaymentLines(amountInput.value);
+  totalEl.textContent = `合計：${yen.format(total)}円`;
+  if (invalidLines.length) {
+    warningEl.textContent = `${invalidLines.join(", ")}行目の金額を確認してください。`;
+  } else {
+    warningEl.textContent = "";
+  }
+  row.classList.toggle("has-warning", invalidLines.length > 0);
+  return { total, invalidLines };
+}
+
 function calculateSettlement() {
-  const people = [...document.querySelectorAll(".person-row")]
-    .map((row) => ({
+  const rows = [...document.querySelectorAll(".person-row")].map((row) => {
+    const parsed = updateSettlementRowTotal(row);
+    return {
       name: row.querySelector(".settlement-name").value.trim(),
-      paid: Math.max(0, Math.round(Number(row.querySelector(".settlement-amount").value || 0))),
-    }))
-    .filter((person) => person.name);
+      paid: parsed.total,
+      invalidLines: parsed.invalidLines,
+    };
+  });
+  const invalidPeople = rows.filter((person) => person.name && person.invalidLines.length);
+  if (invalidPeople.length) {
+    setResult("settlement-result", "支払い明細に不正な行があります。各行の警告を確認してください。", true);
+    return;
+  }
+
+  const people = rows.filter((person) => person.name);
 
   if (people.length < 2) {
     setResult("settlement-result", "名前が入力された人を2人以上にしてください。", true);
