@@ -55,7 +55,7 @@ function addSettlementRow(name = "", amount = "") {
     </div>
     <div>
       <label>支払い明細</label>
-      <textarea class="settlement-amount" rows="3" inputmode="numeric" placeholder="1000&#10;2000円">${escapeText(amount)}</textarea>
+      <textarea class="settlement-amount" rows="3" placeholder="1000&#10;2000&#10;600">${escapeText(amount)}</textarea>
       <p class="person-total">合計：0円</p>
       <p class="person-warning" aria-live="polite"></p>
     </div>
