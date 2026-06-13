@@ -320,6 +320,33 @@ button:disabled {
   font-size: 0.85rem;
 }
 
+.settlement-amount {
+  min-height: 92px;
+}
+
+.person-total,
+.person-warning {
+  margin: 6px 0 0;
+  font-size: 0.9rem;
+  line-height: 1.35;
+}
+
+.person-total {
+  color: #1f5f53;
+  font-weight: 800;
+}
+
+.person-warning {
+  min-height: 1.2em;
+  color: var(--warn);
+  font-weight: 700;
+}
+
+.person-row.has-warning .settlement-amount {
+  border-color: #d25a4f;
+  background: #fff8f7;
+}
+
 .remove-row {
   width: 48px;
   padding: 0;
